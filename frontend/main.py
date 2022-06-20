@@ -1,14 +1,15 @@
 from google.cloud import storage
 import sqlalchemy
 from sqlalchemy.sql import select
+import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET','POST', 'PUT'])
 def root():
-
+    connect_database()
     return render_template('index.html')
 
 def connect_database():
@@ -43,18 +44,29 @@ def connect_database():
             labels = [l[0] for l in labels]
             print("labels: ", labels)
     except Exception as e:
+        print(str(e))
         return 'Error: {}'.format(str(e))
 
-    # try:
-    #     with db.connect() as conn:
-    #         s1 = select(sqlalchemy.text('* from info'))
-    #         content = conn.execute(s1)
-    #         print("content: ", content)
-    # except Exception as e:
-    #     return 'Error: {}'.format(str(e))
+    try:
+        with db.connect() as conn:
+            s1 = select(sqlalchemy.text('* from info'))
+            content = conn.execute(s1)
+            print("content: ", content)
+    except Exception as e:
+        print(str(e))
+        return 'Error: {}'.format(str(e))
 
 @app.route('/file_upload', methods=['GET','POST', 'PUT'])
 def upload():
+    file = request.files.get('file')
+    print("File Name: ", str(file))
+    client = storage.Client()
+    bucket = client.get_bucket("cco-final")
+    blob = bucket.blob(file.filename)
+    blob.upload_from_string(
+        file.read(),
+        content_type=file.content_type
+    )
     labels = ['dummy1', 'dummy2', 'dummy3', 'dummy4', 'dummy5']
     content = [['0', '1', '2', '3', '4'], ['0', '1', '2', '3', '4'], ['0', '1', '2', '3', '4']]
     return render_template('upload_status.html', labels=labels, content=content)

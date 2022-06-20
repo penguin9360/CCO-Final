@@ -44,7 +44,7 @@ Select a file and upload to Google Cloud Storage
       value="58bc39b8f604ee1f18171f...">
   </form>
 
-<form>
+<!-- <form>
   <input
       name="file"
       type="file">
@@ -53,8 +53,14 @@ Select a file and upload to Google Cloud Storage
 <form>
   <input
       type="submit"
+      method="POST"
       formaction="/file_upload"
       value="Upload">
+</form> -->
+
+<form method="POST" action="/file_upload" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit">
 </form>
 
 <form>
