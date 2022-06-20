@@ -57,6 +57,9 @@ Select a file and upload to Google Cloud Storage
       formaction="/file_upload"
       value="Upload">
 </form> -->
+{% for i in msg %}
+    {{ i }}
+{% endfor %}
 
 <form method="POST" action="/file_upload" enctype="multipart/form-data">
     <input type="file" name="file">

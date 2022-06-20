@@ -9,14 +9,37 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET','POST', 'PUT'])
 def root():
-    connect_database()
-    return render_template('index.html')
+    return render_template('index.html', msg=[''])
 
-def connect_database():
+
+@app.route('/file_upload', methods=['GET','POST', 'PUT'])
+def upload():
+    file = request.files.get('file')
+    print("File Name: ", str(file))
+    if file is None or str(file) == "<FileStorage: '' ('application/octet-stream')>":
+        return render_template('index.html', msg=["Please Choose a file"])
+    client = storage.Client()
+    bucket = client.get_bucket("cco-final")
+    blob = bucket.blob(file.filename)
+    try:
+        blob.upload_from_string(
+            file.read(),
+            content_type=file.content_type
+        )
+    except Exception as e:
+        return render_template('index.html', msg=["Upload Failed with exception: ", str(e)])
+
+    return render_template('index.html', msg=["Upload Successful"])
+
+@app.route('/job_attribute', methods=['GET','POST', 'PUT'])
+def job_attribute():
+    # labels = ['dummy1', 'dummy2', 'dummy3', 'dummy4', 'dummy5']
+    # content = [['0', '1', '2', '3', '4'], ['0', '1', '2', '3', '4'], ['0', '1', '2', '3', '4']]
+
     # reference: https://codelabs.developers.google.com/codelabs/connecting-to-cloud-sql-with-cloud-functions#2
     connection_name = "cco-final:europe-west4:cco-db"
     db_password = "cco"
-    db_name = "cco-final"
+    db_name = "CCO_db"
     db_user = "root"
     driver_name = 'mysql+pymysql'
     query_string = dict({"unix_socket": "/cloudsql/{}".format(connection_name)})
@@ -36,7 +59,8 @@ def connect_database():
       pool_recycle=1800
     )
 
-
+    labels = []
+    content = []
     try:
         with db.connect() as conn:
             s0 = sqlalchemy.text('SHOW FIELDS FROM info')
@@ -55,27 +79,8 @@ def connect_database():
     except Exception as e:
         print(str(e))
         return 'Error: {}'.format(str(e))
-
-@app.route('/file_upload', methods=['GET','POST', 'PUT'])
-def upload():
-    file = request.files.get('file')
-    print("File Name: ", str(file))
-    client = storage.Client()
-    bucket = client.get_bucket("cco-final")
-    blob = bucket.blob(file.filename)
-    blob.upload_from_string(
-        file.read(),
-        content_type=file.content_type
-    )
-    labels = ['dummy1', 'dummy2', 'dummy3', 'dummy4', 'dummy5']
-    content = [['0', '1', '2', '3', '4'], ['0', '1', '2', '3', '4'], ['0', '1', '2', '3', '4']]
-    return render_template('upload_status.html', labels=labels, content=content)
-
-@app.route('/job_attribute', methods=['GET','POST', 'PUT'])
-def job_attribute():
-    labels = ['dummy1', 'dummy2', 'dummy3', 'dummy4', 'dummy5']
-    content = [['0', '1', '2', '3', '4'], ['0', '1', '2', '3', '4'], ['0', '1', '2', '3', '4']]
     return render_template('job_attribute.html', labels=labels, content=content)
+
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
