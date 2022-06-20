@@ -1,2 +1,5 @@
-Flask
+Flask==2.0.3
 Jinja2==2.11.3
+SQLAlchemy==1.4.37
+google-cloud-storage
+PyMySQL==1.0.2
