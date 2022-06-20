@@ -1,0 +1,66 @@
+<!-- reference: https://cloud.google.com/storage/docs/xml-api/post-object-forms#html  -->
+Select a file and upload to Google Cloud Storage
+
+<form>
+  <input
+      type="text"
+      name="key"
+      value="test input text box">
+</form>
+
+
+<form
+    action="https://storage.googleapis.com/cco-final"
+    method="post"
+    enctype="multipart/form-data">
+
+  <input
+      type="hidden"
+      name="Content-Type"
+      value="image/jpeg">
+  <input
+      type="hidden"
+      name="success_action_redirect"
+      value="https://www.example.com/success_notification.html">
+  <input
+      type="hidden"
+      name="policy"
+      value="eyJjb25kaXRpb25zIjpbey...">
+  <input
+      type="hidden"
+      name="x-goog-algorithm"
+      value="GOOG4-RSA-SHA256">
+  <input
+      type="hidden"
+      name="x-goog-credential"
+      value="example_account@example_project.iam.gserviceaccount.com/20191102/us-central1/storage/goog4_request">
+  <input
+      type="hidden"
+      name="x-goog-date"
+      value="20191102T043530Z">
+  <input
+      type="hidden"
+      name="x-goog-signature"
+      value="58bc39b8f604ee1f18171f...">
+  </form>
+
+<form>
+  <input
+      name="file"
+      type="file">
+</form>
+
+<form>
+  <input
+      type="submit"
+      formaction="/file_upload"
+      value="Upload">
+</form>
+
+<form>
+  <input type="submit"
+          formaction="/job_attribute"
+          value="Go to Job Attributes">
+  </input>
+
+</form?

@@ -1,0 +1,45 @@
+<!-- reference: https://cloud.google.com/storage/docs/xml-api/post-object-forms#html  -->
+
+<form
+    action="https://storage.googleapis.com/travel-maps"
+    method="post"
+    enctype="multipart/form-data">
+  <input
+      type="text"
+      name="key"
+      value="test-object">
+  <input
+      type="hidden"
+      name="Content-Type"
+      value="image/jpeg">
+  <input
+      type="hidden"
+      name="success_action_redirect"
+      value="https://www.example.com/success_notification.html">
+  <input
+      type="hidden"
+      name="policy"
+      value="eyJjb25kaXRpb25zIjpbey...">
+  <input
+      type="hidden"
+      name="x-goog-algorithm"
+      value="GOOG4-RSA-SHA256">
+  <input
+      type="hidden"
+      name="x-goog-credential"
+      value="example_account@example_project.iam.gserviceaccount.com/20191102/us-central1/storage/goog4_request">
+  <input
+      type="hidden"
+      name="x-goog-date"
+      value="20191102T043530Z">
+  <input
+      type="hidden"
+      name="x-goog-signature"
+      value="58bc39b8f604ee1f18171f...">
+  <input
+      name="file"
+      type="file">
+  <input
+      type="submit"
+      value="Upload">
+</form>
