@@ -18,9 +18,12 @@ def upload():
     global FILE_SIZE
     file = request.files.get('file')
     FILE_NAME = str(file)[15:str(file).index("' (")]
-    file.save("/tmp/tmp.txt")
-    FILE_SIZE = os.stat("/tmp/tmp.txt").st_size
-    os.remove("/tmp/tmp.txt")
+    try:
+        file.save("/tmp/tmp.txt")
+        FILE_SIZE = os.stat("/tmp/tmp.txt").st_size
+        os.remove("/tmp/tmp.txt")
+    except Exception as e:
+        print("Error creating a temp file: ", e)
     print("File Name: ", str(file), "   FILE_NAME: ", FILE_NAME, "   File Size: ", FILE_SIZE)
     if file is None or str(file) == "<FileStorage: '' ('application/octet-stream')>":
         return render_template('index.html', msg=["Please Choose a file"])
@@ -68,7 +71,7 @@ def update_database():
       pool_recycle=1800
     )
     try:
-        query_str = 'INSERT INTO tasks (File, File_Size, IF_started) VALUES ({}, {}, {})'.format(str(FILE_NAME), str(FILE_SIZE), "0")
+        query_str = 'INSERT INTO tasks (File, File_Size, IF_started) VALUES ("{}", "{}", {})'.format(str(FILE_NAME), str(FILE_SIZE), "0")
         with db.connect() as conn:
             show_labels = sqlalchemy.text(query_str)
             conn.execute(show_labels)
